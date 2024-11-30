@@ -6,9 +6,9 @@ async function getUsers(req, res) {
     try {
         const users = await User.findAll({
             attributes: ['id', 'username', 'password', 'status'], 
-            order: [('id', 'DESC')],
+            order: [['id', 'DESC']],
             where: {
-                status: Status.ACTIVE, 
+                status: 'ACTIVE', 
             }
         });
         return res.json(users);
@@ -25,7 +25,7 @@ async function createUser(req, res) {
         const user = await User. create({ username, password });
         res.json(user);
     } catch (error) {
-        logger.error('Error createUser: ', + error);
+        logger.error('Error createUser: ', error);
         res.status(500).json({message: 'Server error'});  
     }
 }
@@ -54,18 +54,15 @@ async function updateUser(req, res) {
             .status(400)
             .json({message: 'Username or Password are required'});
 
-        const user = await User.update(
-            {
-                username: username,
-                password: password,
-            },
-            {
-                where: {
-                    id: id,
-                },
-            }
-        );
-        res.json(user)
+            await User.update(
+                { username, password },
+                { where: { id } }
+            );
+            const updatedUser = await User.findByPk(id, {
+                attributes: ['id', 'username', 'status']
+            });
+            res.json(updatedUser);
+            
     } catch (error) {
         logger.error('Error updateUSer: '+ error);
         res.status(500).json({ message: 'Server error'});
