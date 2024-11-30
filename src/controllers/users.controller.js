@@ -32,7 +32,7 @@ async function createUser(req, res) {
 
 async function getUser(req,res) {
     try {
-        const user = await User.findByPk(req.params,id,{
+        const user = await User.findByPk(req.params.id,{
             attributes: ['username', 'status'] 
         });
         if (!user) {
