@@ -7,7 +7,7 @@ export const encriptar = async (texto) => {
         const saltRounds = +process.env.BCRYPT_SALT_ROUNDS
         return await bcrypt.hash(texto, saltRounds)
     } catch (error) {
-        logger.error( error,message);
+        logger.error( error.message);
         throw new Error('error al encriptar');
          
     }

@@ -14,7 +14,7 @@ async function login(req, res) {
     } 
 
     if(!(await comparar(password, user.password))) 
-        return res.status(401).json({message: 'Usuario no authenticated'});
+        return res.status(403).json({message: 'Usuario no authenticated'});
 
     const secret = process.env.JWT_SECRET
     const segundos = process.env.JWT_EXPIRES_SECONDS;

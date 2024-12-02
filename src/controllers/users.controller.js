@@ -1,6 +1,7 @@
 import {User } from '../models/users.js';
 import {Task } from '../models/tasks.js';
 import logger from '../logs/logger.js';
+import { Status } from '../constants/index.js';
 
 async function getUsers(req, res) {
     try {
@@ -8,12 +9,12 @@ async function getUsers(req, res) {
             attributes: ['id', 'username', 'password', 'status'], 
             order: [['id', 'DESC']],
             where: {
-                status: 'ACTIVE', 
+                status: Status.ACTIVE, 
             }
         });
         return res.json(users);
     } catch (error) {
-        logger.error('Error getUsers',error);
+        logger.error('Error getUsers', +error);
         res.status(500).json({message: 'server error'});
     }
    
@@ -54,9 +55,14 @@ async function updateUser(req, res) {
             .status(400)
             .json({message: 'Username or Password are required'});
 
-            await User.update(
-                { username, password },
-                { where: { id } }
+            const user = await User.update(
+                { username: username, 
+                  password: password, 
+                },
+                { where: { 
+                    id: id,
+                 },
+                }
             );
             const updatedUser = await User.findByPk(id, {
                 attributes: ['id', 'username', 'status']
@@ -80,7 +86,7 @@ async function activateInactivate(req, res) {
 
         const user = await User.findByPk(id);
         if (!user){
-            return res.status(400).json({message: 'User not found'});
+            return res.status(404).json({message: 'User not found'});
         }   
         if (user.status === status)
             return res.status(400).json({message: 'User is the same as current one'});
@@ -108,14 +114,14 @@ async function deleteUser(req, res) {
     }
 }
 
-async function getTask(req, res) {
+async function getTasks(req, res) {
     const { id } = req.params;
     try {
-        const user = await User.findOne({
+        const user = await User.findAll({
             attributes: ['username'],
             include: [{
                 model: Task,
-                attributes: ['name', 'done']
+                attributes: ['name', 'done'],
             }],
             where: {  id },
         });
@@ -133,5 +139,5 @@ export default {
     updateUser,
     activateInactivate,
     deleteUser,
-    getTask,
+    getTasks,
 };

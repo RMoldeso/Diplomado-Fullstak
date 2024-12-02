@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 export function authenticateToken(req, res, next) {
 //obtenemos un jwt de la autorización
-const authHeader = req.headers['Authorization'];
+const authHeader = req.headers['authorization'];
 console.log('authHeader', authHeader);
 
 const token = authHeader && authHeader.split(' ')[1]
