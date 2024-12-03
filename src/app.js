@@ -16,6 +16,6 @@ app.use(express.json());
 //Routes
 app.use('/api/login', authRoutes);  
 app.use('/api/users', userRoutes);
-app.use('/api/tasks', authenticateToken, tasksRoutes);
+app.use('/api/tasks',authenticateToken, tasksRoutes);
 
 export default app;

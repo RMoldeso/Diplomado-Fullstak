@@ -14,7 +14,7 @@ async function getUsers(req, res) {
         });
         return res.json(users);
     } catch (error) {
-        logger.error('Error getUsers', +error);
+        logger.error('Error getUsers', + error);
         res.status(500).json({message: 'server error'});
     }
    
@@ -26,7 +26,7 @@ async function createUser(req, res) {
         const user = await User. create({ username, password });
         res.json(user);
     } catch (error) {
-        logger.error('Error createUser: ', error);
+        logger.error('Error createUser: ', + error);
         res.status(500).json({message: 'Server error'});  
     }
 }
@@ -117,14 +117,14 @@ async function deleteUser(req, res) {
 async function getTasks(req, res) {
     const { id } = req.params;
     try {
-        const user = await User.findAll({
+        const user = await User.findOne({
             attributes: ['username'],
             include: [{
                 model: Task,
                 attributes: ['name', 'done'],
             }],
             where: {  id },
-        });
+        })
     res.json(user);
     } catch (error) {
         logger.error('Error deleteUser: '+ error);

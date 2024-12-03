@@ -4,16 +4,16 @@ import logger from "../logs/logger.js";
 async function getTasks(req, res) {
     const {UserId} = req.user;
     try {
-        const task = await task.findAll({
-            attribute: ['id', 'name', 'done'],
-            order: [('name', 'ASC')],
+        const tasks = await Task.findAll({
+            attributes: ['id', 'name', 'done'],
+            order: [['name', 'ASC']],
             where: {
             UserId
             }
         });
-        res.json(task);
+        res.json(tasks);
     } catch (error) {
-        logger.error('Error getTask', error);
+        logger.error('Error getTask: ', + error);
         res.status(500).json({ message: 'server error' });        
     }
 }
@@ -28,28 +28,28 @@ async function createTask(req, res) {
         });
     res.json(task);
     } catch (error) {
-        logger.error('Error createTask: ', error);
+        logger.error('Error createTask: ', + error);
         res.status(500).json({ message: 'Server error' });        
     }
 }
 
 async function getTask(req, res) {
     const { id } = req.params;
-    const { UserId } = req.user;
+    const { UserId } =req.user;
     try {
         const task = await Task.findOne({
             attributes: ['name', 'done'],
-            where: {
-                id,
-                UserId
-            },
-        })     
+             where: { 
+                id, 
+                UserId,
+             },
+         })     
     res.json(task);   
     } catch (error) {
-        logger.error('Error createTask: ' +error);
+        logger.error('Error getTask: ' + error);
         res.status(500).json({ message: 'Server error' });
     }
-};
+}
 
 async function updateTask(req, res) {
     const { id } = req.params;
@@ -71,15 +71,7 @@ async function taskDone(req, res) {
     const { UserId } = req.user;
     const { done } = req.body;
     try {
-        const task = await Task.update(
-            { done },
-            {
-                where: {
-                    id,
-                    UserId
-                }
-            }
-        );
+        const task = await Task.update({ done }, { where: { id, UserId } });
         if (task [0] === 0)
             return res.status(404).json({ message: 'Task not found' });
         res.json(task);
@@ -94,12 +86,7 @@ async function deleteTask(req, res) {
     const { id } = req.params;
     const { UserId } = req.user;
     try {
-        const task = await Task.destroy({
-            where: {
-                id,
-                UserId
-            }
-        });
+        const task = await Task.destroy({where: { id, UserId } });
         if (task === 0)
             return res.status(404).json({ message: 'Task not found' });
         res.json(task);
