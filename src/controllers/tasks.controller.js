@@ -8,8 +8,8 @@ async function getTasks(req, res) {
             attributes: ['id', 'name', 'done'],
             order: [['name', 'ASC']],
             where: {
-            UserId
-            }
+            UserId,
+            },
         });
         res.json(tasks);
     } catch (error) {
@@ -43,7 +43,7 @@ async function getTask(req, res) {
                 id, 
                 UserId,
              },
-         })     
+         });     
     res.json(task);   
     } catch (error) {
         logger.error('Error getTask: ' + error);
